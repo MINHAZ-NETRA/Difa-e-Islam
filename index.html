@@ -25,7 +25,7 @@ main{max-width:720px;margin:0 auto;padding:10px 14px 60px}
 <header><b>دفاع اسلام</b><input id="q" type="search" placeholder="تلاش کریں..."></header>
 <main><div id="ls"></div><button id="more" hidden>مزید دکھائیں</button><p id="ms" class="m"></p></main>
 <script>
-var API='https://script.google.com/macros/s/AKfycbzpoCRNkhB1HYKtZJuvEFOwmcgRVTFfg4RaHfTY-r8LZASYA-KjYhRjgP1X8hvzIcXvjA/exec';
+var API='https://script.google.com/macros/s/AKfycbxzWoH9DEQxoEhWPf8ls6bbph8OguTgTkx6tapRSPt6lJvngOeY-zAcAtGKerhYmI4/exec';
 var $=function(i){return document.getElementById(i)},list=[],byId={},shown=30,view=null,det={},srv=null,seq=0,timer;
 var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')};
 function norm(s){return String(s||'').toLowerCase().replace(/[\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g,'').replace(/[يىی]/g,'ی').replace(/[كک]/g,'ک').replace(/[هۃةہ]/g,'ہ').replace(/[أإآٱ]/g,'ا').replace(/\s+/g,' ').trim()}
