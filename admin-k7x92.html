@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow">
+<title>ایڈمن پینل — دفاع اسلام</title>
+<style>
+@font-face{font-family:JN;src:url(JameelNoori.woff2) format('woff2');font-display:swap}
+:root{--bg:#F6F1E7;--card:#fff;--ink:#22201C;--soft:#6F6656;--ac:#8A2F2F;--em:#12463A;--bd:#E6DCC6;--f:JN,'Noto Nastaliq Urdu','Segoe UI',Tahoma,sans-serif}
+@media(prefers-color-scheme:dark){:root{--bg:#13100C;--card:#1E1913;--ink:#EEE6D5;--soft:#B5A98F;--ac:#E08F8E;--em:#4FA58D;--bd:#372F23}}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:1.1rem/2 var(--f)}
+header{display:flex;justify-content:space-between;align-items:center;padding:8px 16px;padding-top:calc(8px + env(safe-area-inset-top,0px));background:var(--card);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:5}
+header b{color:var(--ac);font-size:1.35rem}header span{color:var(--soft)}
+main{max-width:720px;margin:0 auto;padding:12px 16px 120px}
+.blur{filter:blur(7px);pointer-events:none;user-select:none}
+.it{display:block;width:100%;text-align:right;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:6px 14px;margin:8px 0;color:var(--ink);font:inherit;cursor:pointer}
+input,textarea{width:100%;padding:6px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;text-align:right}
+textarea{resize:vertical}.ar{font-family:'Amiri','Traditional Arabic','Geeza Pro',serif;font-size:1.3rem}.ltr{direction:ltr;text-align:left}
+.btn{border:1px solid var(--em);border-radius:10px;padding:2px 18px;font:inherit;cursor:pointer;background:var(--em);color:#fff}
+.btn.g{background:none;color:var(--em)}.btn.r{background:none;border-color:var(--ac);color:var(--ac)}
+#plus{position:fixed;bottom:calc(22px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);width:58px;height:58px;border-radius:50%;font-size:2rem;line-height:1;padding:0;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+#md{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:20px;z-index:20}
+.box{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:18px;width:100%;max-width:360px}
+.bk{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:4px 12px 12px;margin:10px 0}
+.bk label{color:var(--soft);font-size:1rem;display:flex;justify-content:space-between;align-items:center}
+.bk label button{background:none;border:0;color:var(--ac);font-size:1.5rem;cursor:pointer;line-height:1}
+#menu{background:var(--card);border:1px solid var(--bd);border-radius:12px;margin:6px 0;overflow:hidden}
+#menu button{display:block;width:100%;text-align:right;padding:2px 16px;background:none;border:0;border-bottom:1px solid var(--bd);color:var(--ink);font:inherit;cursor:pointer}
+#menu button:last-child{border:0}.sm{font-size:.95rem;color:var(--soft)}.row{display:flex;gap:8px;margin-top:14px}.row .btn{flex:1}
+</style></head><body>
+<header><b>دفاع اسلام</b><span>ایڈمن پینل</span></header>
+
+<main id="vl" class="blur"><div id="items"></div><button id="more" class="btn g" style="width:100%" hidden>مزید دکھائیں</button></main>
+<button id="plus" class="btn" aria-label="نیا مضمون">+</button>
+
+<div id="md"><div class="box">
+<h3 style="margin:0 0 8px;text-align:center">داخلہ</h3>
+<input type="password" id="pw" placeholder="پاسورڈ" autocomplete="current-password">
+<label style="display:flex;gap:8px;align-items:center;margin:6px 0"><input type="checkbox" id="rm" style="width:auto"> یاد رکھیں</label>
+<div id="le" style="color:var(--ac);min-height:1.5em"></div>
+<button class="btn" id="go" style="width:100%">داخل ہوں</button>
+</div></div>
+
+<main id="ve" hidden>
+<h2 id="et" style="text-align:center;margin:4px 0;color:var(--em)">نیا مضمون</h2>
+<div class="sm">عنوان</div><input id="un" placeholder="مضمون کا عنوان">
+<div id="bl"></div>
+<button class="btn g" id="add" style="width:100%">+ جوڑیں ▾</button>
+<div id="menu" hidden></div>
+<div id="ms" style="color:var(--ac);min-height:1.5em;margin-top:8px"></div>
+<div class="row"><button class="btn" id="sv">محفوظ کریں</button><button class="btn g" id="cn">منسوخ</button></div>
+<div class="row"><button class="btn r" id="dl" hidden>مضمون حذف کریں</button></div>
+</main>
+
+<script>
+var API='https://script.google.com/macros/s/AKfycbzpoCRNkhB1HYKtZJuvEFOwmcgRVTFfg4RaHfTY-r8LZASYA-KjYhRjgP1X8hvzIcXvjA/exec';
+var $=function(i){return document.getElementById(i)},tk=localStorage.dh_tk||'',list=[],shown=30,cur='',blocks=[];
+var T={gemini:['جیمنی (تصویر / PDF سے بھریں)'],urdu:['اردو عبارت','t'],arabic:['عربی عبارت','t ar'],kitab:['کتاب','i'],musannif:['مصنف','i'],wafat:['وفات','i'],safa:['صفحہ','i'],link:['لنک','i ltr'],audio:['آڈیو اپلوڈ']};
+var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')};
+function post(o){o.token=tk;return fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(o)}).then(function(r){return r.json()})}
+function relog(r){if(r&&r.code==='NEED_LOGIN'){tk='';localStorage.removeItem('dh_tk');$('md').hidden=false;$('vl').classList.add('blur');return true}}
+function msg(t){$('ms').textContent=t||''}
+
+/* داخلہ */
+function unlock(){$('md').hidden=true;$('vl').classList.remove('blur');load()}
+$('go').onclick=function(){$('le').textContent='';post({action:'login',password:$('pw').value,remember:$('rm').checked}).then(function(r){
+  if(r.success){tk=r.token;if($('rm').checked)localStorage.dh_tk=tk;$('pw').value='';unlock()}else $('le').textContent=r.error||'غلط'
+}).catch(function(){$('le').textContent='کنکشن میں مسئلہ ہے'})};
+$('pw').onkeydown=function(e){if(e.key==='Enter')$('go').click()};
+if(tk)post({action:'ping'}).then(function(r){if(r.success)unlock();else{tk='';localStorage.removeItem('dh_tk')}}).catch(function(){});
+
+/* فہرست */
+function load(){fetch(API).then(function(r){return r.json()}).then(function(d){list=d.list||[];draw()})}
+function draw(){
+  $('items').innerHTML=list.slice(0,shown).map(function(r,i){return '<button class="it" data-i="'+i+'">'+esc(r[1])+(r[2]?' 🔊':'')+'</button>'}).join('')
+    ||'<p style="text-align:center;color:var(--soft)">ابھی کوئی مضمون نہیں، نیچے + دبائیں۔</p>';
+  $('more').hidden=list.length<=shown}
+$('more').onclick=function(){shown+=30;draw()};
+$('items').onclick=function(e){var b=e.target.closest('.it');if(b)openEd(list[b.dataset.i][0])};
+$('plus').onclick=function(){setEd({})};
+
+/* ایڈیٹر */
+function openEd(id){fetch(API+'?id='+encodeURIComponent(id)).then(function(r){return r.json()}).then(function(d){if(d.success)setEd(d)})}
+function setEd(o){
+  cur=o.id||'';$('et').textContent=cur?'مضمون میں ترمیم':'نیا مضمون';$('un').value=o.unwan||'';
+  blocks=(o.blocks||[]).map(function(b){return{t:b.t,v:b.v}});if(o.audio)blocks.push({t:'audio',v:o.audio});
+  $('dl').hidden=!cur;msg();$('menu').hidden=true;$('vl').hidden=true;$('plus').hidden=true;$('ve').hidden=false;drawB();scrollTo(0,0)}
+function closeEd(){$('ve').hidden=true;$('vl').hidden=false;$('plus').hidden=false}
+$('cn').onclick=closeEd;
+$('menu').innerHTML=Object.keys(T).map(function(k){return '<button data-t="'+k+'">'+T[k][0]+'</button>'}).join('');
+$('add').onclick=function(){$('menu').hidden=!$('menu').hidden};
+$('menu').onclick=function(e){var t=e.target.dataset.t;if(!t)return;
+  if(t==='audio')blocks=blocks.filter(function(b){return b.t!=='audio'});
+  blocks.push({t:t,v:''});$('menu').hidden=true;drawB();
+  var last=$('bl').lastElementChild;if(last){last.scrollIntoView({block:'center'});var f=last.querySelector('textarea,input');if(f&&f.type!=='file')f.focus()}};
+
+function drawB(){$('bl').innerHTML=blocks.map(function(b,i){
+  var c=T[b.t],h='<div class="bk"><label>'+c[0]+'<button data-x="'+i+'" aria-label="حذف">×</button></label>';
+  if(b.t==='gemini')h+='<input type="file" multiple accept="image/*,application/pdf" data-g="1"><textarea rows="2" data-pr="1" placeholder="ہدایت (اختیاری) — مثلاً: اس صفحے سے عبارت اور حوالہ بھرو" style="margin-top:6px"></textarea><button class="btn" data-s="'+i+'" style="margin-top:6px">بھیجیں</button> <span class="sm" data-st="1"></span>';
+  else if(b.t==='audio')h+='<input type="file" accept="audio/*,.mp3,.m4a,.aac,.wav,.ogg,.opus" data-a="'+i+'"><div class="sm" data-st="1">'+(b.v?'✓ آڈیو لگی ہوئی ہے':'12 MB تک')+'</div>';
+  else if(c[1].charAt(0)==='t')h+='<textarea rows="3" class="'+c[1].slice(2)+'" data-i="'+i+'">'+esc(b.v)+'</textarea>';
+  else h+='<input class="'+c[1].slice(2)+'" data-i="'+i+'" value="'+esc(b.v)+'">';
+  return h+'</div>'}).join('')}
+$('bl').oninput=function(e){var i=e.target.dataset.i;if(i!=null)blocks[i].v=e.target.value};
+$('bl').onclick=function(e){var d=e.target.dataset;
+  if(d.x!=null){blocks.splice(d.x,1);drawB()}
+  if(d.s!=null)gem(+d.s,e.target.closest('.bk'))};
+$('bl').onchange=function(e){var d=e.target.dataset;if(d.a!=null&&e.target.files[0])aud(+d.a,e.target)};
+
+function b64(f){return new Promise(function(ok){var r=new FileReader();r.onload=function(){ok({mime:f.type||'application/pdf',name:f.name,data:String(r.result).split(',')[1]})};r.readAsDataURL(f)})}
+function gem(i,box){
+  var fs=Array.from(box.querySelector('[data-g]').files),pr=box.querySelector('[data-pr]').value,st=box.querySelector('[data-st]');
+  if(!fs.length&&!pr.trim()){st.textContent='فائل یا ہدایت دیں';return}
+  if(fs.reduce(function(s,f){return s+f.size},0)>9*1048576){st.textContent='فائلیں کل 9 MB سے کم ہوں';return}
+  st.textContent='جیمنی پڑھ رہا ہے...';
+  Promise.all(fs.map(b64)).then(function(files){return post({action:'gemini',prompt:pr,files:files})}).then(function(r){
+    if(relog(r))return;
+    if(!r.success){st.textContent=r.error||'ناکام';return}
+    if(r.unwan&&!$('un').value.trim())$('un').value=r.unwan;
+    Array.prototype.splice.apply(blocks,[i,1].concat(r.blocks));drawB()
+  }).catch(function(){st.textContent='کنکشن میں مسئلہ ہے'})}
+function aud(i,inp){
+  var f=inp.files[0],st=inp.parentNode.querySelector('[data-st]');
+  if(f.size>12*1048576){st.textContent='آڈیو 12 MB سے بڑی ہے';return}
+  var m=f.type;if(!/^audio\//.test(m)){var x=(f.name.match(/\.(\w+)$/)||[])[1];m=({mp3:'audio/mpeg',m4a:'audio/mp4',aac:'audio/aac',wav:'audio/wav',ogg:'audio/ogg',opus:'audio/ogg'})[(x||'').toLowerCase()]||''}
+  if(!m){st.textContent='صرف آڈیو فائل';return}
+  st.textContent='اپلوڈ ہو رہی ہے... انتظار کریں';
+  b64(f).then(function(o){return post({action:'upload',name:f.name,mime:m,data:o.data})}).then(function(r){
+    if(relog(r))return;
+    if(r.success){blocks[i].v=r.id;st.textContent='✓ اپلوڈ ہو گئی — اب محفوظ کریں دبائیں'}else st.textContent=r.error||'ناکام'
+  }).catch(function(){st.textContent='کنکشن میں مسئلہ ہے'})}
+
+$('sv').onclick=function(){
+  if(!$('un').value.trim()){msg('عنوان لکھیں');return}
+  var a=blocks.filter(function(b){return b.t==='audio'})[0];msg('محفوظ ہو رہا ہے...');
+  post({action:'save',id:cur,unwan:$('un').value,audio:a?a.v:'',blocks:blocks.filter(function(b){return b.t!=='audio'&&b.t!=='gemini'})}).then(function(r){
+    if(relog(r))return;if(r.success){closeEd();load()}else msg(r.error||'ناکام')}).catch(function(){msg('کنکشن میں مسئلہ ہے')})};
+$('dl').onclick=function(){if(!confirm('یہ مضمون ہمیشہ کے لیے حذف ہو جائے گا۔ جاری رکھیں؟'))return;
+  post({action:'delete',id:cur}).then(function(r){if(relog(r))return;if(r.success){closeEd();load()}else msg(r.error||'ناکام')})};
+</script></body></html>
