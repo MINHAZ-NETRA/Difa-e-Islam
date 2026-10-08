@@ -4,8 +4,8 @@
 <title>دفاع اسلام</title>
 <style>
 @font-face{font-family:JN;src:url(JameelNoori.woff2) format('woff2');font-display:swap}
-:root{--bg:#F6F1E7;--card:#fff;--ink:#22201C;--soft:#6F6656;--ac:#8A2F2F;--em:#12463A;--bd:#E6DCC6;--f:JN,'Noto Nastaliq Urdu','Segoe UI',Tahoma,sans-serif}
-@media(prefers-color-scheme:dark){:root{--bg:#13100C;--card:#1E1913;--ink:#EEE6D5;--soft:#B5A98F;--ac:#E08F8E;--em:#4FA58D;--bd:#372F23}}
+:root{--bg:#F6F1E7;--card:#fff;--ink:#22201C;--soft:#6F6656;--ac:#8A2F2F;--em:#12463A;--bd:#E6DCC6;--f:JN,'Noto Nastaliq Urdu','Segoe UI',Tahoma,sans-serif;--arb:#FBF4DC;--arbd:#E8D9A8;--hw:#FBF0EE;--hwb:#EBCFCB;--onem:#fff}
+@media(prefers-color-scheme:dark){:root{--bg:#13100C;--card:#1E1913;--ink:#EEE6D5;--soft:#B5A98F;--ac:#E08F8E;--em:#4FA58D;--bd:#372F23;--arb:#2B2515;--arbd:#4A3F22;--hw:#2C1B1B;--hwb:#4D2E2E;--onem:#0E1A15}}
 *{box-sizing:border-box}[hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--ink);font:1.15rem/2.1 var(--f)}
 header{padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top,0px));background:var(--card);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:5}
@@ -17,8 +17,17 @@ main{max-width:720px;margin:0 auto;padding:10px 14px 60px}
 .h span{flex:1;font-weight:bold}
 .sp{border:1px solid var(--bd);background:none;border-radius:50%;width:38px;height:38px;color:var(--em);cursor:pointer;font-size:1.1rem;padding:0}.sp.on{background:var(--em);color:#fff}
 .b{padding:2px 16px 14px;border-top:1px solid var(--bd)}
-.b p{margin:8px 0;white-space:pre-wrap}.ar{font-family:'Amiri','Traditional Arabic','Geeza Pro',serif;font-size:1.45rem;line-height:2.3;text-align:right}
-.rf{color:var(--soft);font-size:1rem;border-right:3px solid var(--ac);padding-right:10px;margin:8px 0}.rf a{color:var(--em);word-break:break-all}
+.h:after{content:'▾';color:var(--soft);transition:transform .2s}.c.o .h:after{transform:rotate(180deg)}
+.c{box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.sc{border-radius:12px;padding:6px 14px 8px;margin:12px 0}
+.tg{display:inline-block;font-size:.85rem;line-height:1.7;padding:0 10px;border-radius:20px;margin:4px 0 2px;font-weight:bold}
+.sc p{margin:2px 0 4px;white-space:pre-wrap}
+.sc.ar{background:var(--arb);border:1px solid var(--arbd)}.sc.ar .tg{background:var(--arbd);color:var(--ink)}
+.sc.ar p{font-family:'Amiri','Traditional Arabic','Geeza Pro',serif;font-size:1.5rem;line-height:2.4;text-align:right}
+.sc.ur{border-right:4px solid var(--em);border-radius:4px 12px 12px 4px}.sc.ur .tg{background:var(--em);color:var(--onem)}
+.sc.hw{background:var(--hw);border:1px solid var(--hwb)}.sc.hw .tg{background:var(--ac);color:#fff}
+.hl{font-size:1.02rem;line-height:2}.hl span{color:var(--soft);margin-left:8px}.hl span:after{content:':'}
+.bt{display:inline-block;margin-top:8px;padding:0 20px;border-radius:10px;background:var(--em);color:var(--onem);text-decoration:none;font-size:1.05rem}
 #more{display:block;margin:14px auto;padding:2px 22px;border:1px solid var(--em);border-radius:10px;background:none;color:var(--em);font:inherit;cursor:pointer}
 .m{text-align:center;color:var(--soft)}
 </style></head><body>
@@ -65,20 +74,19 @@ $('more').onclick=function(){shown+=30;render()};
 $('ls').onclick=function(e){
   var sp=e.target.closest('[data-sp]');if(sp){speak(sp.dataset.sp,sp);return}
   var h=e.target.closest('.h');if(!h)return;var c=h.parentNode,b=c.querySelector('.b'),id=c.dataset.id;
-  if(!b.hidden){b.hidden=true;return}
+  if(!b.hidden){b.hidden=true;c.classList.remove('o');return}c.classList.add('o');
   if(det[id]){fill(b,det[id]);return}
   b.hidden=false;b.innerHTML='<p class="m">لوڈ ہو رہا ہے...</p>';
   fetch(API+'?id='+id).then(function(r){return r.json()}).then(function(d){if(d.success){det[id]=d.blocks;fill(b,d.blocks)}else b.innerHTML='<p class="m">نہیں ملا</p>'})
     .catch(function(){b.innerHTML='<p class="m">انٹرنیٹ چیک کریں</p>'})}
 function fill(b,bl){
-  var h='',meta=[],link='';
-  function flush(){if(meta.length||link){h+='<div class="rf">'+meta.join(' — ')+(link?(meta.length?'<br>':'')+'<a href="'+esc(link)+'" target="_blank" rel="noopener">'+esc(link)+'</a>':'')+'</div>';meta=[];link=''}}
+  var h='',hw=[],hl='',had=0,LB={kitab:'کتاب',musannif:'مصنف',wafat:'وفات',safa:'صفحہ'};
+  function flush(){if(hw.length||hl){h+='<div class="sc hw"><div class="tg">حوالہ</div>'+hw.map(function(r){return '<div class="hl"><span>'+r[0]+'</span>'+r[1]+'</div>'}).join('')+(hl?'<a class="bt" href="'+esc(hl)+'" target="_blank" rel="noopener">کتاب کھولیں</a>':'')+'</div>';hw=[];hl='';had=0}}
   bl.forEach(function(x){var v=esc(x.v);
-    if(x.t==='urdu'){flush();h+='<p>'+v+'</p>'}
-    else if(x.t==='arabic'){flush();h+='<p class="ar" dir="rtl">'+v+'</p>'}
-    else if(x.t==='kitab')meta.push(v);else if(x.t==='musannif')meta.push(v);
-    else if(x.t==='wafat')meta.push('وفات: '+v);else if(x.t==='safa')meta.push('صفحہ: '+v);
-    else if(x.t==='link'){if(/^https?:\/\//i.test(x.v))link=x.v;else meta.push(v)}});
+    if(x.t==='urdu'){flush();h+='<div class="sc ur"><div class="tg">اردو عبارت</div><p>'+v+'</p></div>'}
+    else if(x.t==='arabic'){flush();h+='<div class="sc ar"><div class="tg">عربی عبارت</div><p dir="rtl">'+v+'</p></div>'}
+    else if(x.t==='link'){var u=String(x.v).trim();if(!/^https?:\/\//i.test(u))u='https://'+u;if(/^https?:\/\/[^\s\/]+\.[^\s]+$/i.test(u))hl=u}
+    else if(LB[x.t]){if(x.t==='kitab'&&had)flush();if(x.t==='kitab')had=1;hw.push([LB[x.t],v])}});
   flush();b.innerHTML=h||'<p class="m">—</p>';b.hidden=false}
 
 /* آڈیو */
